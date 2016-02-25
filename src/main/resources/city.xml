@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<citylist>
+    <city id="1" pinyin="beijing">北京</city>
+    <city id="2" pinyin="shanghai">上海</city>
+    <city id="32" pinyin="guangzhou">广州</city>
+    <city id="30" pinyin="shenzhen">深圳</city>
+    <city id="28" pinyin="chengdu">成都</city>
+    <city id="17" pinyin="hangzhou">杭州</city>
+    <city id="477" pinyin="wuhan">武汉</city>
+    <city id="10" pinyin="xian">西安</city>
+    <city id="4" pinyin="chongqing">重庆</city>
+    <city id="7" pinyin="qingdao">青岛</city>
+    <city id="12" pinyin="nanjing">南京</city>
+    <city id="25" pinyin="xiamen">厦门</city>
+    <city id="6" pinyin="dalian">大连</city>
+    <city id="3" pinyin="tianjin">天津</city>
+    <city id="43" pinyin="sanya">三亚</city>
+    <city id="144" pinyin="jinan">济南</city>
+    <city id="617" pinyin="taipei">台北</city>
+    <city id="58" pinyin="hongkong">香港</city>
+    <city id="451" pinyin="shenyang">沈阳</city>
+    <city id="14" pinyin="suzhou">苏州</city>
+</citylist>

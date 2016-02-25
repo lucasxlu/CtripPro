@@ -1,0 +1,2 @@
+16:59:45.591 [Thread-4] INFO  com.ctrip.spider.MultiThreadCrawlerOne - Thread-4新建了list
+16:59:45.611 [Thread-5] INFO  com.ctrip.spider.MultiThreadCrawlerTwo - Thread-5新建了list
