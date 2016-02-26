@@ -138,4 +138,25 @@ public class Toolkit {
         Runtime runtime = Runtime.getRuntime();
         runtime.exec("explorer " + directoryPath);
     }
+
+    /**
+     * 合并两个List，返回一个大的List
+     *
+     * @param objectList1
+     * @param objectList2
+     * @return
+     */
+    public static List<Hotel> appendList(List<Hotel> objectList1, List<Hotel> objectList2) {
+        if (objectList1.size() < objectList2.size()) {
+            objectList1.forEach(o -> {
+                objectList2.add(o);
+            });
+            return objectList2;
+        } else {
+            objectList2.forEach(o -> {
+                objectList1.add(o);
+            });
+            return objectList1;
+        }
+    }
 }

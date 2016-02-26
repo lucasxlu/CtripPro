@@ -37,8 +37,7 @@ public class CtripSpider {
     private static final String REFERER_PREFIX = "http://m.ctrip.com/webapp/hotel/";
     private static final Logger logger = LogManager.getLogger();
     public static String folder = "D:/携程";
-    private static Csv csv = null;
-    private static List<Hotel> hotelList = null;
+    private Csv csv = new Csv();
 
     /**
      * 查询指定城市下的酒店信息
@@ -47,9 +46,10 @@ public class CtripSpider {
      * @return
      * @throws UnsupportedEncodingException
      */
-    public static void searchHotelByCity(City city) throws IOException, InterruptedException {
+    public void searchHotelByCity(City city, List<Hotel> hotels) throws IOException, InterruptedException {
 
-        hotelList = new ArrayList<>();
+        csv.setName(city.getName());
+        csv.setList(hotels);
         String urlReferer = CtripSpider.REFERER_PREFIX + city.getPinyin() + city.getId() + "/checkin-" + Constant.DEFAULT_CHECKIN_DAYS + "-0?fr=index";
         logger.trace("urlReferer : " + urlReferer);
         String url = "http://m.ctrip.com/restapi/soa2/10932/hotel/Product/HotelGet";
@@ -69,7 +69,9 @@ public class CtripSpider {
             HttpEntity httpEntity = closeableHttpClient.execute(httpPost).getEntity();
             String jsonData = EntityUtils.toString(httpEntity);
 
-            flag = CtripSpider.extractHotelFromPerPage(jsonData, city.getName());
+            //extract info from each response json
+            flag = this.extractHotelFromPerPage(jsonData);
+            Toolkit.outPut(CtripSpider.folder, csv);
             pageNum++;
         }
 
@@ -150,11 +152,12 @@ public class CtripSpider {
         return JSONValue.toJSONString(payload);
     }
 
-    public static boolean extractHotelFromPerPage(String jsonData, String cityName) {
+    public boolean extractHotelFromPerPage(String jsonData) {
 
         JSONObject jsonObject = (JSONObject) JSONValue.parse(jsonData);
         JSONArray jsonArray = (JSONArray) JSONValue.parse(jsonObject.get("htlInfos").toString());
         if (!"[]".equals(jsonObject.get("htlInfos").toString())) {
+            List<Hotel> hotelListPerPage = new ArrayList<>();
             //loop 15 hotels' info in each response json
             jsonArray.forEach(hotelJsonObject -> {
                 JSONObject allInfoJsonObject = (JSONObject) hotelJsonObject;
@@ -178,17 +181,11 @@ public class CtripSpider {
                 if (!visitedHotel.contains(id)) {
                     Hotel hotel = new Hotel(id, name, zone, price, point, voter, distance, star);
                     logger.debug(hotel);
-                    hotelList.add(hotel);
+                    hotelListPerPage.add(hotel);
                     visitedHotel.add(id);
                 }
             });
-            csv.setList(hotelList);
-            try {
-                Toolkit.outPut(CtripSpider.folder, csv);
-            } catch (IOException e) {
-                e.printStackTrace();
-                logger.error("城市 " + cityName + " 的数据写入失败...");
-            }
+            csv.setList(Toolkit.appendList(hotelListPerPage, csv.getList()));
             return true;
         } else {
             logger.debug("数据获取完成，程序将在5s后自动退出...");
@@ -199,8 +196,8 @@ public class CtripSpider {
     public void process(List<City> cityList) {
         cityList.forEach(city -> {
             try {
-                csv = new Csv();
-                CtripSpider.searchHotelByCity(city);
+                List<Hotel> hotels = new ArrayList<>();
+                this.searchHotelByCity(city, hotels);
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (InterruptedException e) {

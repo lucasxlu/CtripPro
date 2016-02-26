@@ -1,0 +1,22 @@
+15:42:18.996 [Thread-4] INFO  com.ctrip.spider.MultiThreadCrawlerOne - Thread-4新建了list
+15:42:19.035 [Thread-5] INFO  com.ctrip.spider.MultiThreadCrawlerTwo - Thread-5新建了list
+15:42:20.387 [Thread-5] ERROR com.ctrip.spider.CtripSpider - 城市 沈阳 的数据写入失败...
+15:42:42.476 [Thread-4] ERROR com.ctrip.spider.CtripSpider - 城市 大连 的数据写入失败...
+15:43:59.380 [Thread-4] INFO  com.ctrip.spider.MultiThreadCrawlerOne - Thread-4新建了list
+15:43:59.462 [Thread-5] INFO  com.ctrip.spider.MultiThreadCrawlerTwo - Thread-5新建了list
+15:46:24.729 [Thread-4] INFO  com.ctrip.spider.MultiThreadCrawlerOne - Thread-4新建了list
+15:46:24.746 [Thread-5] INFO  com.ctrip.spider.MultiThreadCrawlerTwo - Thread-5新建了list
+15:49:46.802 [Thread-4] INFO  com.ctrip.spider.MultiThreadCrawlerOne - Thread-4新建了list
+15:49:46.813 [Thread-5] INFO  com.ctrip.spider.MultiThreadCrawlerTwo - Thread-5新建了list
+16:09:12.335 [Thread-4] INFO  com.ctrip.spider.MultiThreadCrawlerOne - Thread-4新建了list
+16:09:12.348 [Thread-5] INFO  com.ctrip.spider.MultiThreadCrawlerTwo - Thread-5新建了list
+16:11:32.596 [Thread-4] INFO  com.ctrip.spider.MultiThreadCrawlerOne - Thread-4新建了list
+16:11:32.622 [Thread-5] INFO  com.ctrip.spider.MultiThreadCrawlerTwo - Thread-5新建了list
+16:21:12.582 [Thread-4] INFO  com.ctrip.spider.MultiThreadCrawlerOne - Thread-4新建了list
+16:21:12.616 [Thread-5] INFO  com.ctrip.spider.MultiThreadCrawlerTwo - Thread-5新建了list
+16:38:13.699 [Thread-4] INFO  com.ctrip.spider.MultiThreadCrawlerOne - Thread-4新建了list
+16:38:13.733 [Thread-5] INFO  com.ctrip.spider.MultiThreadCrawlerTwo - Thread-5新建了list
+16:38:51.835 [Thread-4] INFO  com.ctrip.spider.MultiThreadCrawlerOne - Thread-4新建了list
+16:38:51.846 [Thread-5] INFO  com.ctrip.spider.MultiThreadCrawlerTwo - Thread-5新建了list
+16:51:04.858 [Thread-4] INFO  com.ctrip.spider.MultiThreadCrawlerOne - Thread-4新建了list
+16:51:04.893 [Thread-5] INFO  com.ctrip.spider.MultiThreadCrawlerTwo - Thread-5新建了list
