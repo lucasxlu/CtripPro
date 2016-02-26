@@ -13,6 +13,6 @@ public class Constant {
 
     public static final int DEFAULT_CHECKIN_DAYS = 1;
 
-    public static final String CITY_XML_CONFIG = "D:\\Users\\CtripPro\\src\\main\\resources\\city.xml";
+    public static final String CITY_XML_CONFIG = "city.xml";
 
 }
