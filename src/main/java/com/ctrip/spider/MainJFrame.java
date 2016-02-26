@@ -14,7 +14,6 @@ import org.xml.sax.SAXException;
 
 import javax.swing.*;
 import javax.xml.parsers.ParserConfigurationException;
-import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
@@ -30,6 +29,7 @@ public class MainJFrame extends javax.swing.JFrame {
 
     private static Logger logger = LogManager.getLogger();
     public static List<String> listCityData = new ArrayList<>();
+    protected static boolean isEnable = true;
 
     /**
      * Creates new form MainJFrame
@@ -305,14 +305,9 @@ public class MainJFrame extends javax.swing.JFrame {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {
         // TODO add your handling code here:
-        boolean isEnable = true;
         if (null != jTextField1.getText() && !"".equals(jTextField1.getText()) && listCityData.size() != 0) {
-            jButton2.setText("正在爬取，请稍后...");
+            MainJFrame.isEnable = false;
             CtripSpider.folder = jTextField1.getText().trim();
-            isEnable = false;
-            MainJFrame.changeEnableState(isEnable, jButton1, jButton2, jComboBox1, jList1);
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            jLabel6.setText("程序开始于 " + simpleDateFormat.format(new Date()));
 
             MultiThreadCrawlerOne multiThreadCrawlerOne = new MultiThreadCrawlerOne();
             MultiThreadCrawlerTwo multiThreadCrawlerTwo = new MultiThreadCrawlerTwo();
@@ -325,25 +320,28 @@ public class MainJFrame extends javax.swing.JFrame {
             thread2.start();
             logger.debug("线程2开始运行...");
 
-            isEnable = true;
-            MainJFrame.changeEnableState(isEnable, jButton1, jButton2, jComboBox1, jList1);
+            this.changeEnableState(isEnable, jButton1, jButton2, jComboBox1, jList1, jLabel6);
 
         } else {
             JOptionPane.showMessageDialog(null, "目录或城市不能为空");
         }
     }
 
-    private static void changeEnableState(boolean isEnable, JButton jButton1, JButton jButton2, JComboBox jComboBox, JList jList) {
-        if (isEnable == false) {
-            jButton2.setEnabled(false);
-            jButton1.setEnabled(false);
-            jComboBox.setEnabled(false);
-            jList.setEnabled(false);
-        } else if (isEnable == true) {
-            jButton2.setEnabled(true);
-            jButton1.setEnabled(true);
-            jComboBox.setEnabled(true);
-            jList.setEnabled(true);
+    protected void changeEnableState(boolean enable, JButton jButton1, JButton jButton2, JComboBox jComboBox, JList jList, JLabel jLabel6) {
+        if (enable == false) {
+            jButton2.setEnabled(enable);
+            jButton1.setEnabled(enable);
+            jComboBox.setEnabled(enable);
+            jList.setEnabled(enable);
+            jButton2.setText("正在爬取，请稍后...");
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            jLabel6.setText("程序开始于 " + simpleDateFormat.format(new Date()));
+        } else if (enable == true) {
+            jButton2.setText("开始获取");
+            jButton2.setEnabled(enable);
+            jButton1.setEnabled(enable);
+            jComboBox.setEnabled(enable);
+            jList.setEnabled(enable);
         }
 
     }

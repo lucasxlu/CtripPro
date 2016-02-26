@@ -8,6 +8,7 @@ import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -33,14 +34,8 @@ public class MultiThreadCrawlerOne implements Runnable {
         try {
             List<City>[] cityLists = Toolkit.getCityListForCrawler(MainJFrame.listCityData);
             logger.info(Thread.currentThread().getName() + "新建了list");
-            cityLists[0].forEach(city -> {
-                try {
-                    CtripSpider.searchHotelByCity(city);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    logger.error(city.getName() + " 的数据获取失败...");
-                }
-            });
+            CtripSpider ctripSpider = new CtripSpider();
+            ctripSpider.process(cityLists[0]);
         } catch (IOException e) {
             e.printStackTrace();
         } catch (SAXException e) {
@@ -48,6 +43,5 @@ public class MultiThreadCrawlerOne implements Runnable {
         } catch (ParserConfigurationException e) {
             e.printStackTrace();
         }
-
     }
 }

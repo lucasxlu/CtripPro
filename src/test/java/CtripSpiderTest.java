@@ -14,13 +14,6 @@ import java.util.Map;
  */
 public class CtripSpiderTest {
 
-    @Test
-    public void testSearchHotelByCity() throws UnsupportedEncodingException {
-        try {
-            CtripSpider.searchHotelByCity(new City("beijing", "1", "北京"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+
 
 }

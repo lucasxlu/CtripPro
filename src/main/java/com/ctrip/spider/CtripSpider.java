@@ -1,6 +1,7 @@
 package com.ctrip.spider;
 
 import com.ctrip.entity.City;
+import com.ctrip.entity.Csv;
 import com.ctrip.entity.Hotel;
 import com.ctrip.util.BrowserVersion;
 import com.ctrip.util.Constant;
@@ -34,9 +35,10 @@ public class CtripSpider {
 
     private static List<String> visitedHotel = new ArrayList<>();
     private static final String REFERER_PREFIX = "http://m.ctrip.com/webapp/hotel/";
-    private static Logger logger = LogManager.getLogger();
-    private static List<Hotel> hotelList = new ArrayList<>();
+    private static final Logger logger = LogManager.getLogger();
     public static String folder = "D:/携程";
+    private static Csv csv = null;
+    private static List<Hotel> hotelList = null;
 
     /**
      * 查询指定城市下的酒店信息
@@ -45,9 +47,11 @@ public class CtripSpider {
      * @return
      * @throws UnsupportedEncodingException
      */
-    public static void searchHotelByCity(City city) throws IOException {
+    public static void searchHotelByCity(City city) throws IOException, InterruptedException {
+
+        hotelList = new ArrayList<>();
         String urlReferer = CtripSpider.REFERER_PREFIX + city.getPinyin() + city.getId() + "/checkin-" + Constant.DEFAULT_CHECKIN_DAYS + "-0?fr=index";
-        logger.debug("urlReferer : " + urlReferer);
+        logger.trace("urlReferer : " + urlReferer);
         String url = "http://m.ctrip.com/restapi/soa2/10932/hotel/Product/HotelGet";
 
         //get inDay and outDay
@@ -69,6 +73,9 @@ public class CtripSpider {
             pageNum++;
         }
 
+        Thread.sleep(5000);
+        Toolkit.openDirectory(folder);
+        System.exit(0);
     }
 
     private static CloseableHttpClient customeCloseableHttpClient() {
@@ -88,7 +95,7 @@ public class CtripSpider {
      * @param index
      * @return
      */
-    public static String generatePayload(int index, String cityId, String inDay, String outDay) {
+    private static String generatePayload(int index, String cityId, String inDay, String outDay) {
         Map<String, Object> payload = new HashMap<>();
         payload.put("biz", 1);
         payload.put("contrl", 3);
@@ -144,9 +151,11 @@ public class CtripSpider {
     }
 
     public static boolean extractHotelFromPerPage(String jsonData, String cityName) {
+
         JSONObject jsonObject = (JSONObject) JSONValue.parse(jsonData);
         JSONArray jsonArray = (JSONArray) JSONValue.parse(jsonObject.get("htlInfos").toString());
         if (!"[]".equals(jsonObject.get("htlInfos").toString())) {
+            //loop 15 hotels' info in each response json
             jsonArray.forEach(hotelJsonObject -> {
                 JSONObject allInfoJsonObject = (JSONObject) hotelJsonObject;
 
@@ -170,27 +179,34 @@ public class CtripSpider {
                     Hotel hotel = new Hotel(id, name, zone, price, point, voter, distance, star);
                     logger.debug(hotel);
                     hotelList.add(hotel);
-                    try {
-                        Toolkit.outPut(hotelList, CtripSpider.folder, cityName);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
                     visitedHotel.add(id);
                 }
             });
+            csv.setList(hotelList);
+            try {
+                Toolkit.outPut(CtripSpider.folder, csv);
+            } catch (IOException e) {
+                e.printStackTrace();
+                logger.error("城市 " + cityName + " 的数据写入失败...");
+            }
             return true;
         } else {
-            logger.debug("数据获取完成...");
+            logger.debug("数据获取完成，程序将在5s后自动退出...");
             return false;
         }
     }
 
-    public static void main(String[] args) {
-        try {
-            CtripSpider.searchHotelByCity(new City("beijing", "1", "北京"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
+    public void process(List<City> cityList) {
+        cityList.forEach(city -> {
+            try {
+                csv = new Csv();
+                CtripSpider.searchHotelByCity(city);
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        });
     }
+
 }

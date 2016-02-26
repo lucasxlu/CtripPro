@@ -1,6 +1,7 @@
 package com.ctrip.util;
 
 import com.ctrip.entity.City;
+import com.ctrip.entity.Csv;
 import com.ctrip.entity.Hotel;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -66,20 +67,19 @@ public class Toolkit {
     /**
      * 将List<Hotel> 结果写出CSV文件
      *
-     * @param hotelList
      * @param folder
-     * @param cityName
+     * @param csv
      * @throws IOException
      */
-    public static void outPut(List<Hotel> hotelList, String folder, String cityName) throws IOException {
-        Files.deleteIfExists(Paths.get(folder + File.separator + cityName + ".csv"));
-        Files.createFile(Paths.get(folder + File.separator + cityName + ".csv"));
+    public static void outPut(String folder, Csv csv) throws IOException {
+        Files.deleteIfExists(Paths.get(folder + File.separator + csv.getName() + ".csv"));
+        Files.createFile(Paths.get(folder + File.separator + csv.getName() + ".csv"));
 
         StringBuilder stringBuilder = new StringBuilder("编号, 名称, 地区, 价格, 评分, 点评人数, 离市中心, 星级\r\n");
-        hotelList.forEach(hotel -> {
+        csv.getList().forEach(hotel -> {
             stringBuilder.append(hotel.getId()).append(",").append(hotel.getName()).append(",").append(hotel.getZone()).append(",").append(hotel.getPrice()).append(",").append(hotel.getPoint()).append(",").append(hotel.getVoter()).append(",").append(hotel.getDistance()).append(",").append(hotel.getStar()).append("\r\n");
         });
-        Files.write(Paths.get(folder + File.separator + cityName + ".csv"), stringBuilder.toString().getBytes("GBK"));
+        Files.write(Paths.get(folder + File.separator + csv.getName() + ".csv"), stringBuilder.toString().getBytes("GBK"));
     }
 
     /**
@@ -110,27 +110,15 @@ public class Toolkit {
         List<City> cityList1 = new ArrayList<>();
         List<City> cityList2 = new ArrayList<>();
 
-        if (list.size() % 2 == 0) { //若为偶数
-            for (int i = 0; i < list.size() / 2; i++) {
-                cityList1.add(Toolkit.findCityInList(list.get(i)));
-            }
-
-            for (int i = list.size() / 2; i < list.size(); i++) {
-                cityList2.add(Toolkit.findCityInList(list.get(i)));
-            }
-            cityLists[0] = cityList1;
-            cityLists[1] = cityList2;
-        } else {
-            for (int i = 0; i < (int) (list.size() / 2); i++) {
-                cityList1.add(Toolkit.findCityInList(list.get(i)));
-            }
-
-            for (int i = list.size() / 2; i < list.size(); i++) {
-                cityList2.add(Toolkit.findCityInList(list.get(i)));
-            }
-            cityLists[0] = cityList1;
-            cityLists[1] = cityList2;
+        for (int i = 0; i < list.size() / 2; i++) {
+            cityList1.add(Toolkit.findCityInList(list.get(i)));
         }
+
+        for (int i = list.size() / 2; i < list.size(); i++) {
+            cityList2.add(Toolkit.findCityInList(list.get(i)));
+        }
+        cityLists[0] = cityList1;
+        cityLists[1] = cityList2;
 
         return cityLists;
     }
@@ -146,4 +134,8 @@ public class Toolkit {
         return null;
     }
 
+    public static void openDirectory(String directoryPath) throws IOException {
+        Runtime runtime = Runtime.getRuntime();
+        runtime.exec("explorer " + directoryPath);
+    }
 }
