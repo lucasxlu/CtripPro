@@ -50,4 +50,11 @@ public class ToolkitTest {
             System.out.println(city);
         });
     }
+
+    @Test
+    public void testFindJar() throws IOException {
+        Toolkit.findJar("C:\\Users\\XuLu\\Desktop\\Ctrip\\CtripPro_jar\\class.txt").forEach(s -> {
+            System.out.println(s);
+        });
+    }
 }

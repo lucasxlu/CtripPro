@@ -14,6 +14,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
@@ -158,5 +159,15 @@ public class Toolkit {
             });
             return objectList1;
         }
+    }
+
+    public static List<String> findJar(String txtPath) throws IOException {
+        List<String> list = new ArrayList<>();
+        Files.readAllLines(Paths.get(txtPath), Charset.forName("GBK")).forEach(s -> {
+            if (s.contains("CtripPro_jar") && !list.contains(s.split("CtripPro_jar")[1])) {
+                list.add(s.split("CtripPro_jar")[1]);
+            }
+        });
+        return list;
     }
 }
