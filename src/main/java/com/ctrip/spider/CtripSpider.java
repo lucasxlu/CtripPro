@@ -3,6 +3,7 @@ package com.ctrip.spider;
 import com.ctrip.entity.City;
 import com.ctrip.entity.Csv;
 import com.ctrip.entity.Hotel;
+import com.ctrip.entity.HotelDetail;
 import com.ctrip.util.BrowserVersion;
 import com.ctrip.util.Constant;
 import com.ctrip.util.Toolkit;
@@ -20,6 +21,8 @@ import org.apache.logging.log4j.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -177,9 +180,33 @@ public class CtripSpider {
 
                 JSONArray pricesJsonObj = (JSONArray) allInfoJsonObject.get("prices");
                 String price = ((JSONObject) ((JSONObject) pricesJsonObj.get(0)).get("detail")).get("price").toString();
+                HotelDetail hotelDetail = null;
+                try {
+                    hotelDetail = this.searchHotelDetailByHotelId(Integer.parseInt(id));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                int hotelId = hotelDetail.getHotelId();
+                String provname = hotelDetail.getProvname();
+                String shrtName = hotelDetail.getShrtName();
+                String addr = hotelDetail.getAddr();
+                String open = hotelDetail.getOpen();
+                String fitment = hotelDetail.getFitment();
+                String phe = hotelDetail.getPhe();
+                String brief = hotelDetail.getBrief();
+                String desc = hotelDetail.getDesc();
+                String vote = hotelDetail.getVote();
+                String rat = hotelDetail.getRat();
+                String raAt = hotelDetail.getRaAt();
+                String serv = hotelDetail.getServ();
+                String facl = hotelDetail.getFacl();
+                String cname = hotelDetail.getCname();
+                String around = hotelDetail.getAround();
+                String brefast = hotelDetail.getBrefast();
 
                 if (!visitedHotel.contains(id)) {
-                    Hotel hotel = new Hotel(id, name, zone, price, point, voter, distance, star);
+                    Hotel hotel = new Hotel(id, name, price, distance, hotelId, provname, shrtName, addr, zone, star, open, fitment, phe, brief, desc, vote, point, rat, raAt, serv, facl, cname, around, brefast);
                     logger.debug(hotel);
                     hotelListPerPage.add(hotel);
                     visitedHotel.add(id);
@@ -204,6 +231,115 @@ public class CtripSpider {
                 e.printStackTrace();
             }
         });
+    }
+
+    private static String generateHotelDetailsPayload(int hotelId, String inDay, String outDay) {
+        Map<String, Object> payload = new HashMap<>();
+        payload.put("id", hotelId);
+
+        Map<String, Object> setInfo = new HashMap<>();
+        setInfo.put("cityId", 0);
+        setInfo.put("dstId", 0);
+        setInfo.put("inDay", inDay);
+        setInfo.put("outDay", outDay);
+        setInfo.put("membertype", "");
+        payload.put("setInfo", setInfo);
+
+        payload.put("pay", 0);
+        payload.put("contrl", 2);
+        payload.put("needRoom", false);
+        payload.put("num", 1);
+        payload.put("biz", 1);
+        payload.put("sourBiz", 0);
+        payload.put("priceBiz", 0);
+        payload.put("icldrid", 0);
+
+        Map<String, Object> alliance = new HashMap<>();
+        alliance.put("aid", "66672");
+        alliance.put("sid", "508668");
+        alliance.put("ouid", "");
+        alliance.put("ishybrid", 0);
+        payload.put("alliance", alliance);
+
+        Map<String, Object> head = new HashMap<>();
+        head.put("cid", "09031151210193772702");
+        head.put("ctok", "");
+        head.put("cver", "1.0");
+        head.put("lang", "01");
+        head.put("sid", "55552328");
+        head.put("syscode", "09");
+        head.put("auth", null);
+
+        List<Map> extension = new ArrayList<>();
+        Map<String, String> extensionSub1 = new HashMap<>();
+        extensionSub1.put("name", "pageid");
+        extensionSub1.put("value", "212094");
+        extension.add(extensionSub1);
+
+        Map<String, String> extensionSub2 = new HashMap<>();
+        extensionSub2.put("name", "protocal");
+        extensionSub2.put("value", "http");
+        extension.add(extensionSub2);
+
+        head.put("extension", extension);
+        payload.put("head", head);
+
+        payload.put("contentType", "json");
+
+        return JSONValue.toJSONString(payload);
+    }
+
+    public HotelDetail searchHotelDetailByHotelId(int hotelId) throws IOException {
+        String refer = "http://m.ctrip.com/webapp/hotel/hoteldetail/" + hotelId + ".html";
+        String requestUrl = "http://m.ctrip.com/restapi/soa2/10932/hotel/product/hoteldetailget?_fxpcqlniredt=09031151210193772702";
+
+        //get inDay and outDay
+        String[] days = Toolkit.getDays();
+
+        CloseableHttpClient closeableHttpClient = CtripSpider.customeCloseableHttpClient();
+        HttpPost httpPost = new HttpPost(requestUrl);
+        httpPost.setHeader("Content-Type", "application/json");
+
+        httpPost.setEntity(new StringEntity(CtripSpider.generateHotelDetailsPayload(hotelId, days[0], days[1])));
+        HttpEntity httpEntity = closeableHttpClient.execute(httpPost).getEntity();
+        String jsonData = EntityUtils.toString(httpEntity);
+
+        JSONObject jsonObject = (JSONObject) JSONValue.parse(jsonData);
+        JSONObject baseInfoObj = (JSONObject) jsonObject.get("baseInfo");
+
+        String provname = baseInfoObj.get("provname").toString();
+        String name = baseInfoObj.get("name").toString();
+        String shrtName = baseInfoObj.get("shrtName").toString();
+        String addr = baseInfoObj.get("addr").toString();
+        String zone = baseInfoObj.get("zone").toString();
+
+        JSONObject activeinfoObj = (JSONObject) jsonObject.get("activeinfo");
+        String star = activeinfoObj.get("star").toString();
+        String open = activeinfoObj.get("open").toString();
+        String fitment = activeinfoObj.get("fitment").toString();
+
+        JSONObject staticInfoObj = (JSONObject) jsonObject.get("staticInfo");
+        String phe = staticInfoObj.get("phe").toString();
+        String brief = staticInfoObj.get("brief").toString();
+        String desc = staticInfoObj.get("desc").toString();
+
+        JSONObject comtInfoObj = (JSONObject) jsonObject.get("comtInfo");
+        String vote = comtInfoObj.get("vote").toString();
+        String point = comtInfoObj.get("point").toString();
+        String rat = comtInfoObj.get("rat").toString();
+        String raAt = comtInfoObj.get("raAt").toString();
+        String serv = comtInfoObj.get("serv").toString();
+        String facl = comtInfoObj.get("facl").toString();
+
+        String cname = jsonObject.get("cname").toString();
+        String around = jsonObject.get("around").toString();
+        String brefast = jsonObject.get("brefast").toString();
+
+        HotelDetail hotelDetail = new HotelDetail(hotelId, provname, name, shrtName, addr, zone, star, open, fitment, phe, brief, desc, vote, point, rat, raAt, serv, facl, cname, around, brefast);
+        logger.debug(hotelDetail);
+
+        closeableHttpClient.close();
+        return hotelDetail;
     }
 
 }

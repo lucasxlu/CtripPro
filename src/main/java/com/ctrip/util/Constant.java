@@ -15,4 +15,6 @@ public class Constant {
 
     public static final String CITY_XML_CONFIG = "city.xml";
 
+    public static final String HOTEL_URL_PREFIX = "http://m.ctrip.com/webapp/hotel/hoteldetail/";
+
 }

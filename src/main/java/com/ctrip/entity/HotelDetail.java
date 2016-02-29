@@ -1,16 +1,13 @@
 package com.ctrip.entity;
 
 /**
- * Created by LucasX on 2016/2/23.
+ * Created by LucasX on 2016/2/29.
  */
-public class Hotel {
+public class HotelDetail {
 
-    private String id;
-    private String name;
-    private String price;
-    private String distance;
     private int hotelId;
     private String provname;
+    private String name;
     private String shrtName;
     private String addr;
     private String zone;
@@ -30,13 +27,10 @@ public class Hotel {
     private String around;
     private String brefast;
 
-    public Hotel(String id, String name, String price, String distance, int hotelId, String provname, String shrtName, String addr, String zone, String star, String open, String fitment, String phe, String brief, String desc, String vote, String point, String rat, String raAt, String serv, String facl, String cname, String around, String brefast) {
-        this.id = id;
-        this.name = name;
-        this.price = price;
-        this.distance = distance;
+    public HotelDetail(int hotelId, String provname, String name, String shrtName, String addr, String zone, String star, String open, String fitment, String phe, String brief, String desc, String vote, String point, String rat, String raAt, String serv, String facl, String cname, String around, String brefast) {
         this.hotelId = hotelId;
         this.provname = provname;
+        this.name = name;
         this.shrtName = shrtName;
         this.addr = addr;
         this.zone = zone;
@@ -57,38 +51,6 @@ public class Hotel {
         this.brefast = brefast;
     }
 
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getPrice() {
-        return price;
-    }
-
-    public void setPrice(String price) {
-        this.price = price;
-    }
-
-    public String getDistance() {
-        return distance;
-    }
-
-    public void setDistance(String distance) {
-        this.distance = distance;
-    }
-
     public int getHotelId() {
         return hotelId;
     }
@@ -103,6 +65,14 @@ public class Hotel {
 
     public void setProvname(String provname) {
         this.provname = provname;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getShrtName() {
@@ -251,13 +221,10 @@ public class Hotel {
 
     @Override
     public String toString() {
-        return "Hotel{" +
-                "id='" + id + '\'' +
-                ", name='" + name + '\'' +
-                ", price='" + price + '\'' +
-                ", distance='" + distance + '\'' +
-                ", hotelId=" + hotelId +
+        return "HotelDetail{" +
+                "hotelId='" + hotelId + '\'' +
                 ", provname='" + provname + '\'' +
+                ", name='" + name + '\'' +
                 ", shrtName='" + shrtName + '\'' +
                 ", addr='" + addr + '\'' +
                 ", zone='" + zone + '\'' +

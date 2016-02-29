@@ -76,9 +76,9 @@ public class Toolkit {
         Files.deleteIfExists(Paths.get(folder + File.separator + csv.getName() + ".csv"));
         Files.createFile(Paths.get(folder + File.separator + csv.getName() + ".csv"));
 
-        StringBuilder stringBuilder = new StringBuilder("编号, 名称, 地区, 价格, 评分, 点评人数, 离市中心, 星级\r\n");
+        StringBuilder stringBuilder = new StringBuilder("编号, 名称, 价格, 距离, 酒店ID, 省份, 简称, 地址, 商区, 星级, 开业时间, 装修时间, 电话, 简要信息, 描述, 评分人数, 得分, 卫生, 位置, 服务, 设施, 城市, 周边, 早餐\r\n");
         csv.getList().forEach(hotel -> {
-            stringBuilder.append(hotel.getId()).append(",").append(hotel.getName()).append(",").append(hotel.getZone()).append(",").append(hotel.getPrice()).append(",").append(hotel.getPoint()).append(",").append(hotel.getVoter()).append(",").append(hotel.getDistance()).append(",").append(hotel.getStar()).append("\r\n");
+            stringBuilder.append(hotel.getId()).append(",").append(hotel.getName()).append(",").append(hotel.getPrice()).append(",").append(hotel.getDistance()).append(",").append(hotel.getHotelId()).append(",").append(hotel.getProvname()).append(",").append(hotel.getShrtName()).append(",").append(hotel.getAddr()).append(",").append(hotel.getZone()).append(",").append(hotel.getStar()).append(",").append(hotel.getOpen()).append(",").append(hotel.getFitment()).append(",").append(hotel.getPhe()).append(",").append(hotel.getBrief()).append(",").append(hotel.getDesc()).append(",").append(hotel.getVote()).append(",").append(hotel.getPoint()).append(",").append(hotel.getRat()).append(",").append(hotel.getRaAt()).append(",").append(hotel.getServ()).append(",").append(hotel.getFacl()).append(",").append(hotel.getCname()).append(",").append(hotel.getAround()).append(",").append(hotel.getBrefast()).append("\r\n");
         });
         Files.write(Paths.get(folder + File.separator + csv.getName() + ".csv"), stringBuilder.toString().getBytes("GBK"));
     }

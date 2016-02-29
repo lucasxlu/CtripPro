@@ -15,5 +15,12 @@ import java.util.Map;
 public class CtripSpiderTest {
 
 
+    @Test
+    public void testSearchHotelDetailByHotelId() throws IOException {
+        CtripSpider ctripSpider = new CtripSpider();
+        ctripSpider.searchHotelDetailByHotelId(435924);
+    }
+
+
 
 }
