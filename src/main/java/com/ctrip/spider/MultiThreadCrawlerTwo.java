@@ -33,7 +33,6 @@ public class MultiThreadCrawlerTwo extends CtripSpider implements Runnable {
     public void run() {
         try {
             List<City>[] cityLists = Toolkit.getCityListForCrawler(MainJFrame.listCityData);
-            logger.info(Thread.currentThread().getName() + "新建了list");
             CtripSpider ctripSpider = new CtripSpider();
             ctripSpider.process(cityLists[1]);
         } catch (IOException e) {

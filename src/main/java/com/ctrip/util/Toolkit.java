@@ -8,6 +8,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import javax.swing.*;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -76,9 +77,9 @@ public class Toolkit {
         Files.deleteIfExists(Paths.get(folder + File.separator + csv.getName() + ".csv"));
         Files.createFile(Paths.get(folder + File.separator + csv.getName() + ".csv"));
 
-        StringBuilder stringBuilder = new StringBuilder("编号, 名称, 价格, 距离, 酒店ID, 省份, 简称, 地址, 商区, 星级, 开业时间, 装修时间, 电话, 简要信息, 描述, 评分人数, 得分, 卫生, 位置, 服务, 设施, 城市, 周边, 早餐\r\n");
+        StringBuilder stringBuilder = new StringBuilder("编号, 名称, 价格, 距离, 简称, 地址, 商区, 星级, 电话, 描述, 评分人数, 综合得分, 卫生得分, 位置得分, 服务得分, 设施得分, 早餐\r\n");
         csv.getList().forEach(hotel -> {
-            stringBuilder.append(hotel.getId()).append(",").append(hotel.getName()).append(",").append(hotel.getPrice()).append(",").append(hotel.getDistance()).append(",").append(hotel.getHotelId()).append(",").append(hotel.getProvname()).append(",").append(hotel.getShrtName()).append(",").append(hotel.getAddr()).append(",").append(hotel.getZone()).append(",").append(hotel.getStar()).append(",").append(hotel.getOpen()).append(",").append(hotel.getFitment()).append(",").append(hotel.getPhe()).append(",").append(hotel.getBrief()).append(",").append(hotel.getDesc()).append(",").append(hotel.getVote()).append(",").append(hotel.getPoint()).append(",").append(hotel.getRat()).append(",").append(hotel.getRaAt()).append(",").append(hotel.getServ()).append(",").append(hotel.getFacl()).append(",").append(hotel.getCname()).append(",").append(hotel.getAround()).append(",").append(hotel.getBrefast()).append("\r\n");
+            stringBuilder.append(hotel.getId()).append(", ").append(hotel.getName()).append(", ").append(hotel.getPrice()).append(", ").append(hotel.getDistance()).append(", ").append(hotel.getShrtName()).append(", ").append(hotel.getAddr()).append(", ").append(hotel.getZone()).append(", ").append(hotel.getStar()).append(", ").append(hotel.getPhe()).append(", ").append(hotel.getBrief()).append(", ").append(hotel.getVote()).append(", ").append(hotel.getPoint()).append(", ").append(hotel.getRat()).append(", ").append(hotel.getRaAt()).append(", ").append(hotel.getServ()).append(", ").append(hotel.getFacl()).append(", ").append(hotel.getBrefast()).append("\r\n");
         });
         Files.write(Paths.get(folder + File.separator + csv.getName() + ".csv"), stringBuilder.toString().getBytes("GBK"));
     }
@@ -170,4 +171,13 @@ public class Toolkit {
         });
         return list;
     }
+
+    public static void checkJdkVersion() {
+        String jdkVersion = System.getProperties().getProperty("java.version");
+        if (!jdkVersion.startsWith("1.8")) {
+            JOptionPane.showMessageDialog(null, "您当前的JDK版本为 " + jdkVersion + " ;本系统需要JDK1.8及以上版本支持！");
+            System.exit(0);
+        }
+    }
+
 }

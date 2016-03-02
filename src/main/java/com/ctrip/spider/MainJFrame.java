@@ -14,6 +14,7 @@ import org.xml.sax.SAXException;
 
 import javax.swing.*;
 import javax.xml.parsers.ParserConfigurationException;
+import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
@@ -21,6 +22,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.io.File;
 
 /**
  * @author LucasX
@@ -35,6 +37,7 @@ public class MainJFrame extends javax.swing.JFrame {
      * Creates new form MainJFrame
      */
     public MainJFrame() {
+        Toolkit.checkJdkVersion();
         try {
             initComponents();
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -184,7 +187,7 @@ public class MainJFrame extends javax.swing.JFrame {
         });
         jMenu3.add(jMenuItem2);
 
-        jMenuItem3.setText("关于");
+        jMenuItem3.setText("使用说明");
         jMenuItem3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jMenuItem3ActionPerformed(evt);
@@ -242,7 +245,7 @@ public class MainJFrame extends javax.swing.JFrame {
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                         .addComponent(jLabel3)
                                         .addComponent(jLabel4)
-                                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGap(27, 27, 27)
                                 .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(32, 32, 32)
@@ -251,6 +254,12 @@ public class MainJFrame extends javax.swing.JFrame {
                                 .addComponent(jLabel5))
         );
 
+        //set icon
+        Image image = java.awt.Toolkit.getDefaultToolkit().getImage("agt_web.ico");
+        setIconImage(image);
+
+        //set the city.xml read only
+        new File("city.xml").setReadOnly();
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>
@@ -275,7 +284,15 @@ public class MainJFrame extends javax.swing.JFrame {
 
     //关于
     private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
+        Runtime runtime = Runtime.getRuntime();
+        try {
+            runtime.exec("explorer " + new File("").getAbsolutePath().toString() + "\\使用手册.pdf");
+            logger.trace("explorer " + new File("").getAbsolutePath().toString() + "\\使用手册.pdf");
+        } catch (IOException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "未安装Adobe Reader!");
+            logger.error("未安装Adobe Reader!");
+        }
     }
 
     //多线程
@@ -402,7 +419,7 @@ public class MainJFrame extends javax.swing.JFrame {
                      */
                     @Override
                     public void windowClosing(WindowEvent e) {
-                        int exit = JOptionPane.showConfirmDialog(null, "确定退出?", "退出", JOptionPane.OK_CANCEL_OPTION);
+                        int exit = JOptionPane.showConfirmDialog(null, "确定退出?", "警告", JOptionPane.OK_CANCEL_OPTION);
                         if (exit == 0) {
                             System.exit(0);
                         }

@@ -24,6 +24,7 @@ import org.json.simple.JSONValue;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
+import javax.swing.*;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -69,7 +70,17 @@ public class CtripSpider {
 
         while (flag) {
             httpPost.setEntity(new StringEntity(CtripSpider.generatePayload(pageNum, city.getId(), days[0], days[1])));
-            HttpEntity httpEntity = closeableHttpClient.execute(httpPost).getEntity();
+            HttpEntity httpEntity = null;
+            try {
+                httpEntity = closeableHttpClient.execute(httpPost).getEntity();
+            } catch (IOException e) {
+                e.printStackTrace();
+                logger.error(e.toString());
+                int resp = JOptionPane.showConfirmDialog(null, "初始化失败,请检查您的网络!", "警告", JOptionPane.DEFAULT_OPTION);
+                if (resp == JOptionPane.OK_OPTION) {
+                    System.exit(0);
+                }
+            }
             String jsonData = EntityUtils.toString(httpEntity);
 
             //extract info from each response json
@@ -229,6 +240,7 @@ public class CtripSpider {
                 e.printStackTrace();
             } catch (InterruptedException e) {
                 e.printStackTrace();
+                logger.error("网络连接失败 " + e.getMessage());
             }
         });
     }
@@ -307,33 +319,36 @@ public class CtripSpider {
         JSONObject jsonObject = (JSONObject) JSONValue.parse(jsonData);
         JSONObject baseInfoObj = (JSONObject) jsonObject.get("baseInfo");
 
-        String provname = baseInfoObj.get("provname").toString();
-        String name = baseInfoObj.get("name").toString();
-        String shrtName = baseInfoObj.get("shrtName").toString();
-        String addr = baseInfoObj.get("addr").toString();
-        String zone = baseInfoObj.get("zone").toString();
+        String provname = "", name = "", shrtName = "", addr = "", zone = "", star = "", open = "", fitment = "", phe = "", brief = "", desc = "", vote = "", point = "", rat = "", raAt = "", serv = "", facl = "", cname = "", around = "", brefast = "";
+        if (null != baseInfoObj && !"".equals(baseInfoObj.toString())) {
+            provname = baseInfoObj.get("provname").toString();
+            name = baseInfoObj.get("name").toString();
+            shrtName = baseInfoObj.get("shrtName").toString();
+            addr = baseInfoObj.get("addr").toString();
+            zone = baseInfoObj.get("zone").toString();
 
-        JSONObject activeinfoObj = (JSONObject) jsonObject.get("activeinfo");
-        String star = activeinfoObj.get("star").toString();
-        String open = activeinfoObj.get("open").toString();
-        String fitment = activeinfoObj.get("fitment").toString();
+            JSONObject activeinfoObj = (JSONObject) jsonObject.get("activeinfo");
+            star = activeinfoObj.get("star").toString();
+            open = activeinfoObj.get("open").toString();
+            fitment = activeinfoObj.get("fitment").toString();
 
-        JSONObject staticInfoObj = (JSONObject) jsonObject.get("staticInfo");
-        String phe = staticInfoObj.get("phe").toString();
-        String brief = staticInfoObj.get("brief").toString();
-        String desc = staticInfoObj.get("desc").toString();
+            JSONObject staticInfoObj = (JSONObject) jsonObject.get("staticInfo");
+            phe = staticInfoObj.get("phe").toString();
+            brief = staticInfoObj.get("brief").toString();
+            desc = staticInfoObj.get("desc").toString();
 
-        JSONObject comtInfoObj = (JSONObject) jsonObject.get("comtInfo");
-        String vote = comtInfoObj.get("vote").toString();
-        String point = comtInfoObj.get("point").toString();
-        String rat = comtInfoObj.get("rat").toString();
-        String raAt = comtInfoObj.get("raAt").toString();
-        String serv = comtInfoObj.get("serv").toString();
-        String facl = comtInfoObj.get("facl").toString();
+            JSONObject comtInfoObj = (JSONObject) jsonObject.get("comtInfo");
+            vote = comtInfoObj.get("vote").toString();
+            point = comtInfoObj.get("point").toString();
+            rat = comtInfoObj.get("rat").toString();
+            raAt = comtInfoObj.get("raAt").toString();
+            serv = comtInfoObj.get("serv").toString();
+            facl = comtInfoObj.get("facl").toString();
 
-        String cname = jsonObject.get("cname").toString();
-        String around = jsonObject.get("around").toString();
-        String brefast = jsonObject.get("brefast").toString();
+            cname = jsonObject.get("cname").toString();
+            around = jsonObject.get("around").toString();
+            brefast = jsonObject.get("brefast").toString();
+        }
 
         HotelDetail hotelDetail = new HotelDetail(hotelId, provname, name, shrtName, addr, zone, star, open, fitment, phe, brief, desc, vote, point, rat, raAt, serv, facl, cname, around, brefast);
         logger.debug(hotelDetail);

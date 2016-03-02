@@ -57,4 +57,9 @@ public class ToolkitTest {
             System.out.println(s);
         });
     }
+
+    @Test
+    public void testJdkVersion() {
+        Toolkit.checkJdkVersion();
+    }
 }
