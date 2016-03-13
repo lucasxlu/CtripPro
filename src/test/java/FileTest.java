@@ -11,5 +11,6 @@ public class FileTest {
     public void testFile() throws IOException {
         File file = new File("test.txt");
         file.createNewFile();
+        file.setWritable(false);
     }
 }

@@ -20,4 +20,23 @@
     <city id="58" pinyin="hongkong">香港</city>
     <city id="451" pinyin="shenyang">沈阳</city>
     <city id="14" pinyin="suzhou">苏州</city>
+    <city id="375" pinyin="Ningbo">宁波</city>
+    <city id="258" pinyin="Fuzhou">福州</city>
+    <city id="206" pinyin="Changsha">长沙</city>
+    <city id="42" pinyin="Haikou">海口</city>
+    <city id="428" pinyin="Shijiazhuang">石家庄</city>
+    <city id="105" pinyin="Taiyuan">太原</city>
+    <city id="103" pinyin="Hohhot">呼和浩特</city>
+    <city id="158" pinyin="Changchun">长春</city>
+    <city id="5" pinyin="Harbin">哈尔滨</city>
+    <city id="278" pinyin="Hefei">合肥</city>
+    <city id="376" pinyin="Nanchang">南昌</city>
+    <city id="559" pinyin="Zhengzhou">郑州</city>
+    <city id="380" pinyin="Nanning">南宁</city>
+    <city id="38" pinyin="Guiyang">贵阳</city>
+    <city id="34" pinyin="Kunming">昆明</city>
+    <city id="41" pinyin="Lhasa">拉萨</city>
+    <city id="100" pinyin="Lanzhou">兰州</city>
+    <city id="124" pinyin="Xining">西宁</city>
+    <city id="99" pinyin="Yinchuan">银川</city>
 </citylist>
