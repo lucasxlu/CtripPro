@@ -27,10 +27,7 @@ import org.jsoup.nodes.Document;
 import javax.swing.*;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by LucasX on 2016/2/23.
@@ -42,6 +39,12 @@ public class CtripSpider {
     private static final Logger logger = LogManager.getLogger();
     public static String folder = "D:/携程";
     private Csv csv = new Csv();
+    private static int SLEEP_TIME = 0;
+
+    static {
+        int time = Integer.parseInt(ResourceBundle.getBundle("config").getString("TIME_BREAK").trim());
+        SLEEP_TIME = time * 1000;
+    }
 
     /**
      * 查询指定城市下的酒店信息
@@ -89,7 +92,7 @@ public class CtripSpider {
             pageNum++;
         }
 
-        Thread.sleep(5000);
+        Thread.sleep(SLEEP_TIME);
         Toolkit.openDirectory(folder);
         System.exit(0);
     }
@@ -168,66 +171,80 @@ public class CtripSpider {
 
     public boolean extractHotelFromPerPage(String jsonData) {
 
-        JSONObject jsonObject = (JSONObject) JSONValue.parse(jsonData);
-        JSONArray jsonArray = (JSONArray) JSONValue.parse(jsonObject.get("htlInfos").toString());
-        if (!"[]".equals(jsonObject.get("htlInfos").toString())) {
-            List<Hotel> hotelListPerPage = new ArrayList<>();
-            //loop 15 hotels' info in each response json
-            jsonArray.forEach(hotelJsonObject -> {
-                JSONObject allInfoJsonObject = (JSONObject) hotelJsonObject;
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        logger.debug(jsonData);
+        if (!jsonData.contains("message")) {
+            JSONObject jsonObject = (JSONObject) JSONValue.parse(jsonData);
 
-                JSONObject basicInfoJsonObj = (JSONObject) allInfoJsonObject.get("baseInfo");
-                String zone = basicInfoJsonObj.get("zone").toString();
-                String name = basicInfoJsonObj.get("name").toString();
-                String id = basicInfoJsonObj.get("id").toString();
+            boolean continuable = true;
+            JSONArray jsonArray = (JSONArray) JSONValue.parse(String.valueOf(jsonObject.get("htlInfos")));
+            logger.debug(jsonArray.size()+"==============================");
+            if (!"[]".equals(jsonObject.get("htlInfos").toString())) {
+                List<Hotel> hotelListPerPage = new ArrayList<>();
+                //loop 15 hotels' info in each response json
+                jsonArray.forEach(hotelJsonObject -> {
+                    JSONObject allInfoJsonObject = (JSONObject) hotelJsonObject;
 
-                JSONObject extendJsonObj = (JSONObject) allInfoJsonObject.get("extend");
-                String distance = extendJsonObj.get("distance").toString();
-                String voter = extendJsonObj.get("voter").toString();
-                String point = extendJsonObj.get("point").toString();
+                    JSONObject basicInfoJsonObj = (JSONObject) allInfoJsonObject.get("baseInfo");
+                    String zone = basicInfoJsonObj.get("zone").toString();
+                    String name = basicInfoJsonObj.get("name").toString();
+                    String id = basicInfoJsonObj.get("id").toString();
 
-                JSONObject activeinfoJsonObj = (JSONObject) allInfoJsonObject.get("activeinfo");
-                String star = activeinfoJsonObj.get("star").toString();
+                    JSONObject extendJsonObj = (JSONObject) allInfoJsonObject.get("extend");
+                    String distance = extendJsonObj.get("distance").toString();
+                    String voter = extendJsonObj.get("voter").toString();
+                    String point = extendJsonObj.get("point").toString();
 
-                JSONArray pricesJsonObj = (JSONArray) allInfoJsonObject.get("prices");
-                String price = ((JSONObject) ((JSONObject) pricesJsonObj.get(0)).get("detail")).get("price").toString();
-                HotelDetail hotelDetail = null;
-                try {
-                    hotelDetail = this.searchHotelDetailByHotelId(Integer.parseInt(id));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                    JSONObject activeinfoJsonObj = (JSONObject) allInfoJsonObject.get("activeinfo");
+                    String star = activeinfoJsonObj.get("star").toString();
 
-                int hotelId = hotelDetail.getHotelId();
-                String provname = hotelDetail.getProvname();
-                String shrtName = hotelDetail.getShrtName();
-                String addr = hotelDetail.getAddr();
-                String open = hotelDetail.getOpen();
-                String fitment = hotelDetail.getFitment();
-                String phe = hotelDetail.getPhe();
-                String brief = hotelDetail.getBrief();
-                String desc = hotelDetail.getDesc();
-                String vote = hotelDetail.getVote();
-                String rat = hotelDetail.getRat();
-                String raAt = hotelDetail.getRaAt();
-                String serv = hotelDetail.getServ();
-                String facl = hotelDetail.getFacl();
-                String cname = hotelDetail.getCname();
-                String around = hotelDetail.getAround();
-                String brefast = hotelDetail.getBrefast();
+                    JSONArray pricesJsonObj = (JSONArray) allInfoJsonObject.get("prices");
+                    String price = ((JSONObject) ((JSONObject) pricesJsonObj.get(0)).get("detail")).get("price").toString();
+                    HotelDetail hotelDetail = null;
+                    try {
+                        hotelDetail = this.searchHotelDetailByHotelId(Integer.parseInt(id));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
 
-                if (!visitedHotel.contains(id)) {
-                    Hotel hotel = new Hotel(id, name, price, distance, hotelId, provname, shrtName, addr, zone, star, open, fitment, phe, brief, desc, vote, point, rat, raAt, serv, facl, cname, around, brefast);
-                    logger.debug(hotel);
-                    hotelListPerPage.add(hotel);
-                    visitedHotel.add(id);
-                }
-            });
-            csv.setList(Toolkit.appendList(hotelListPerPage, csv.getList()));
-            return true;
+                    int hotelId = hotelDetail.getHotelId();
+                    String provname = hotelDetail.getProvname();
+                    String shrtName = hotelDetail.getShrtName();
+                    String addr = hotelDetail.getAddr();
+                    String open = hotelDetail.getOpen();
+                    String fitment = hotelDetail.getFitment();
+                    String phe = hotelDetail.getPhe();
+                    String brief = hotelDetail.getBrief();
+                    String desc = hotelDetail.getDesc();
+                    String vote = hotelDetail.getVote();
+                    String rat = hotelDetail.getRat();
+                    String raAt = hotelDetail.getRaAt();
+                    String serv = hotelDetail.getServ();
+                    String facl = hotelDetail.getFacl();
+                    String cname = hotelDetail.getCname();
+                    String around = hotelDetail.getAround();
+                    String brefast = hotelDetail.getBrefast();
+
+                    if (!visitedHotel.contains(id)) {
+                        Hotel hotel = new Hotel(id, name, price, distance, hotelId, provname, shrtName, addr, zone, star, open, fitment, phe, brief, desc, vote, point, rat, raAt, serv, facl, cname, around, brefast);
+                        logger.debug(hotel);
+                        hotelListPerPage.add(hotel);
+                        visitedHotel.add(id);
+                    }
+                });
+                csv.setList(Toolkit.appendList(hotelListPerPage, csv.getList()));
+//                return true;
+            } else {
+                logger.info("数据获取完成，程序将在5s后自动退出...");
+                continuable = false;
+            }
+            return continuable;
         } else {
-            logger.debug("数据获取完成，程序将在5s后自动退出...");
-            return false;
+            return true;
         }
     }
 

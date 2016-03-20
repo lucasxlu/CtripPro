@@ -3,6 +3,7 @@ package com.ctrip.util;
 import com.ctrip.entity.City;
 import com.ctrip.entity.Csv;
 import com.ctrip.entity.Hotel;
+import org.apache.logging.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -20,11 +21,14 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.logging.LogManager;
 
 /**
  * Created by LucasX on 2016/2/23.
  */
 public class Toolkit {
+
+    private static final Logger logger = org.apache.logging.log4j.LogManager.getLogger();
 
     public static List<City> readCityXmlConfig(String xmlPath) throws ParserConfigurationException, IOException, SAXException {
         List<City> cityList = new ArrayList<>();
@@ -73,16 +77,21 @@ public class Toolkit {
      * @param csv
      * @throws IOException
      */
-    public static void outPut(String folder, Csv csv) throws IOException {
-        Files.deleteIfExists(Paths.get(folder + File.separator + csv.getName() + ".csv"));
-        Files.createFile(Paths.get(folder + File.separator + csv.getName() + ".csv"));
-
-        StringBuilder stringBuilder = new StringBuilder("编号, 名称, 价格, 距离, 简称, 地址, 商区, 星级, 电话, 描述, 评分人数, 综合得分, 卫生得分, 位置得分, 服务得分, 设施得分, 早餐\r\n");
-        csv.getList().forEach(hotel -> {
-            stringBuilder.append(hotel.getId()).append(", ").append(hotel.getName()).append(", ").append(hotel.getPrice()).append(", ").append(hotel.getDistance()).append(", ").append(hotel.getShrtName()).append(", ").append(hotel.getAddr()).append(", ").append(hotel.getZone()).append(", ").append(hotel.getStar()).append(", ").append(hotel.getPhe()).append(", ").append(hotel.getBrief()).append(", ").append(hotel.getVote()).append(", ").append(hotel.getPoint()).append(", ").append(hotel.getRat()).append(", ").append(hotel.getRaAt()).append(", ").append(hotel.getServ()).append(", ").append(hotel.getFacl()).append(", ").append(hotel.getBrefast()).append("\r\n");
-        });
-        Files.write(Paths.get(folder + File.separator + csv.getName() + ".csv"), stringBuilder.toString().getBytes("GBK"));
+    public static void outPut(String folder, Csv csv) {
+        try {
+            Files.deleteIfExists(Paths.get(folder + File.separator + csv.getName() + ".csv"));
+            Files.createFile(Paths.get(folder + File.separator + csv.getName() + ".csv"));
+            StringBuilder stringBuilder = new StringBuilder("编号, 名称, 价格, 距离, 简称, 地址, 商区, 星级, 电话, 描述, 评分人数, 综合得分, 卫生得分, 位置得分, 服务得分, 设施得分, 早餐\r\n");
+            csv.getList().forEach(hotel -> {
+                stringBuilder.append(hotel.getId()).append(", ").append(hotel.getName()).append(", ").append(hotel.getPrice()).append(", ").append(hotel.getDistance()).append(", ").append(hotel.getShrtName()).append(", ").append(hotel.getAddr()).append(", ").append(hotel.getZone()).append(", ").append(hotel.getStar()).append(", ").append(hotel.getPhe()).append(", ").append(hotel.getBrief()).append(", ").append(hotel.getVote()).append(", ").append(hotel.getPoint()).append(", ").append(hotel.getRat()).append(", ").append(hotel.getRaAt()).append(", ").append(hotel.getServ()).append(", ").append(hotel.getFacl()).append(", ").append(hotel.getBrefast()).append("\r\n");
+            });
+            Files.write(Paths.get(folder + File.separator + csv.getName() + ".csv"), stringBuilder.toString().getBytes("GBK"));
+        } catch (IOException e) {
+            e.printStackTrace();
+            logger.error("写入失败, 原因是 : " + e.getMessage());
+        }
     }
+
 
     /**
      * 将List转为数组
