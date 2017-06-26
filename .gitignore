@@ -1,1 +1,6 @@
 # Created by .ignore support plugin (hsz.mobi)
+.idea
+CtripPro.iml
+logInfo.log
+out/
+target/

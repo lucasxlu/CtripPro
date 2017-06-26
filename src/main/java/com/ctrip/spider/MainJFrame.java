@@ -140,7 +140,7 @@ public class MainJFrame extends javax.swing.JFrame {
 
         jLabel5.setFont(new java.awt.Font("微软雅黑", 0, 12)); // NOI18N
         jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel5.setText("copyright 北京捷文科技");
+        jLabel5.setText("copyright LucasX");
 
         jLabel6.setBackground(new java.awt.Color(255, 255, 255));
         jLabel6.setFont(new java.awt.Font("微软雅黑", 0, 12)); // NOI18N
