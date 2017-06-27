@@ -245,7 +245,7 @@ public class MainJFrame extends javax.swing.JFrame {
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                         .addComponent(jLabel3)
                                         .addComponent(jLabel4)
-                                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGap(27, 27, 27)
                                 .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(32, 32, 32)
@@ -286,8 +286,8 @@ public class MainJFrame extends javax.swing.JFrame {
     private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {
         Runtime runtime = Runtime.getRuntime();
         try {
-            runtime.exec("explorer " + new File("").getAbsolutePath().toString() + "\\使用手册.pdf");
-            logger.trace("explorer " + new File("").getAbsolutePath().toString() + "\\使用手册.pdf");
+            runtime.exec("explorer " + new File("").getAbsolutePath().toString() + "\\manual.pdf");
+            logger.trace("explorer " + new File("").getAbsolutePath().toString() + "\\manual.pdf");
         } catch (IOException e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(null, "未安装Adobe Reader!");
